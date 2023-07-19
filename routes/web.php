@@ -16,9 +16,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/welcome');
 
-
-# Welcome routes
-Route::name('welcome.')->prefix('welcome')->group(function() {
+// Welcome routes
+Route::name('welcome.')->prefix('welcome')->group(function () {
     Route::get('/', [WelcomeController::class, 'index'])
         ->name('index');
 

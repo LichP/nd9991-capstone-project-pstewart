@@ -1,0 +1,23 @@
+version: 2.1
+
+jobs:
+  # lint: Lints the codebase using the tighten/duster Laravel lint tool. We
+  # focus on the core Laravel Pint linting only.
+  lint:
+    docker:
+      - image: cimg/php:8.2.8
+    steps:
+      - checkout
+      - run:
+          name: Install composer dependencies
+          command: |
+            composer install
+      - run:
+          name: Perform linting
+          command: |
+            ./vendor/bin/duster lint -u pint
+
+workflows:
+  default:
+    jobs:
+      - lint

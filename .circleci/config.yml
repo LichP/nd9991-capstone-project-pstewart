@@ -36,6 +36,19 @@ jobs:
           command: |
             docker tag capstone-welcome-app:build-${CIRCLE_WORKFLOW_ID:0:7} 928265084040.dkr.ecr.us-east-1.amazonaws.com/capstone-welcome-app:build-${CIRCLE_WORKFLOW_ID:0:7}
             docker push 928265084040.dkr.ecr.us-east-1.amazonaws.com/capstone-welcome-app:build-${CIRCLE_WORKFLOW_ID:0:7}
+  # deploy: Ensures the eks cluster exists
+  deploy:
+    docker:
+      - image: cimg/aws:2023.07
+    steps:
+      - checkout
+      - run:
+          name: 'Create / update EKS cluster from template'
+          command: |
+            aws cloudformation deploy \
+              --stack-name capstone-welcome-app-eks-cluster
+              --template-file .circleci/cloudformation/eks-cluster.yml
+              --parameter-overrides PublicCIDR=$(curl -s http://checkip.amazonaws.com)/32
 
 workflows:
   default:
@@ -43,3 +56,5 @@ workflows:
       - lint
       - build-image:
           requires: [lint]
+      - deploy:
+          requires: [build-image]

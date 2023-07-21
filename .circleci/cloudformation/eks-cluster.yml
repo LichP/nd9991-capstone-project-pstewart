@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Deploys the EKS Cluster for the capstone-welcome-app application.
+
+Parameters:
+  SubnetIds:
+    Description: Subnets we want to use in our cluster
+    Type: List<AWS::EC2::Subnet::Id>
+    # Default to pre-existing subnets in my us-east-1 VPC
+    Default:
+      - subnet-01d264625615e0f91 # us-east-1a
+      - subnet-00794d4b7e6f2228d # us-east-1b
+      - subnet-0cd97581f811ad0b4 # us-east-1c
+
+  PublicCIDR:
+    Description: CIDR we want to allow access to the cluster endpoint.
+    Type: String
+    Default: 0.0.0.0/0
+
+  ControlRoleARN:
+    Description: ARN of control plane IAM role.
+    Type: String
+    Default: "arn:aws:iam::928265084040:role/eks-control"
+
+Resources:
+  # EKS Cluster for the Capstone Welcome App
+  CapstoneWelcomeAppEKSCluster:
+    Type: AWS::EKS::Cluster
+    Properties:
+      Name: CapstoneWelcomeAppProd
+      RoleArn: !Ref ControlRoleARN
+      ResourcesVpcConfig:
+        SubnetIds: !Ref SubnetIds
+        EndpointPublicAccess: true
+        EndpointPrivateAccess: true
+        PublicAccessCidrs:
+          - !Ref PublicCIDR
+      Logging:
+        ClusterLogging:
+          EnabledTypes:
+            - Type: api
+            - Type: audit

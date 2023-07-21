@@ -25,7 +25,7 @@ jobs:
       - run:
           name: 'Build docker image'
           command: |
-            docker build -t capstone-welcome-app:build-${CIRCLE_WORKFLOW_ID:0:7}
+            docker build -t capstone-welcome-app:build-${CIRCLE_WORKFLOW_ID:0:7} .
       - run:
           name: 'Login to AWS container registry'
           command: |

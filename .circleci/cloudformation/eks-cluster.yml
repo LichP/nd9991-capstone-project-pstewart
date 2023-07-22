@@ -2,11 +2,10 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: Deploys the EKS Cluster for the capstone-welcome-app application.
 
 Parameters:
-  SubnetIds:
-    Description: Subnets we want to use in our cluster
-    Type: List<AWS::EC2::Subnet::Id>
-    # Default to pre-existing subnets in my us-east-1 VPC in AZs a, b, and c
-    Default: subnet-01d264625615e0f91,subnet-00794d4b7e6f2228d,subnet-0cd97581f811ad0b4
+  VPCStackName:
+    Description: Name of the stack used to configure the VPC.
+    Type: String
+    Default: capstone-welcome-app-eks-vpc
 
   PublicCIDR:
     Description: CIDR we want to allow access to the cluster endpoint.
@@ -26,7 +25,9 @@ Resources:
       Name: CapstoneWelcomeAppProd
       RoleArn: !Ref ControlRoleARN
       ResourcesVpcConfig:
-        SubnetIds: !Ref SubnetIds
+        SubnetIds:
+          Fn::ImportValue:
+            !Sub "${VPCStackName}-SubnetIds"
         EndpointPublicAccess: true
         EndpointPrivateAccess: true
         PublicAccessCidrs:

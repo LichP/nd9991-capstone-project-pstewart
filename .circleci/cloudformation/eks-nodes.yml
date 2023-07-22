@@ -2,12 +2,6 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: Deploys the EKS Cluster nodes for the capstone-welcome-app application.
 
 Parameters:
-  SubnetIds:
-    Description: Subnets we want to use in our cluster
-    Type: List<AWS::EC2::Subnet::Id>
-    # Default to pre-existing subnets in my us-east-1 VPC in AZs a, b, and c
-    Default: subnet-01d264625615e0f91,subnet-00794d4b7e6f2228d,subnet-0cd97581f811ad0b4
-
   NodeRoleARN:
     Description: ARN of eks nodes IAM role.
     Type: String
@@ -24,4 +18,6 @@ Resources:
         MinSize: 1
         DesiredSize: 2
         MaxSize: 3
-      Subnets: !Ref SubnetIds
+      Subnets:
+        Fn::ImportValue:
+          !Sub "${VPCStackName}-PrivateSubnetIds"

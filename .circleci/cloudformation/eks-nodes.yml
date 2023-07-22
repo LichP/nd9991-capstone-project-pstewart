@@ -18,4 +18,8 @@ Resources:
         MinSize: 1
         DesiredSize: 2
         MaxSize: 3
-      Subnets: !Split [ ",", !ImportValue !Sub "${VPCStackName}-PrivateSubnetIds" ]
+      Subnets:
+        Fn::Split:
+          - ","
+          - Fn::ImportValue:
+             !Sub "${VPCStackName}-PrivateSubnetIds"

@@ -1,5 +1,9 @@
 version: 2.1
 
+# Use the kubernetes orb to facilitate controlling our cluster
+orbs:
+  kubernetes: circleci/kubernetes@1.3.1
+
 jobs:
   # lint: Lints the codebase using the tighten/duster Laravel lint tool. We
   # focus on the core Laravel Pint linting only.
@@ -46,9 +50,15 @@ jobs:
           name: 'Create / update EKS cluster from template'
           command: |
             aws cloudformation deploy \
-              --stack-name capstone-welcome-app-eks-cluster
-              --template-file .circleci/cloudformation/eks-cluster.yml
+              --stack-name capstone-welcome-app-eks-cluster \
+              --template-file .circleci/cloudformation/eks-cluster.yml \
               --parameter-overrides PublicCIDR=$(curl -s http://checkip.amazonaws.com)/32
+          # We increase the timeout for this step as during the first run when
+          # infrastructure is being created this step will be slow, however in
+          # normal runs where we don't change the cloudformation yaml we only
+          # expect the PublicCIDR to change, which is a much smaller changeset
+          # that should apply quite quickly.
+          no_output_timeout: 30m
 
 workflows:
   default:

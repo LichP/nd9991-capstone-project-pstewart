@@ -47,6 +47,12 @@ jobs:
     steps:
       - checkout
       - run:
+          name: 'Create / update VPC for EKS cluster from template'
+          command: |
+            aws cloudformation deploy \
+              --stack-name capstone-welcome-app-eks-vpc \
+              --template-file .circleci/cloudformation/eks-vpc.yml
+      - run:
           name: 'Create / update EKS cluster from template'
           command: |
             aws cloudformation deploy \
@@ -63,7 +69,7 @@ jobs:
           name: 'Create / update EKS nodegroup from template'
           command: |
             aws cloudformation deploy \
-              --stack-name capstone-welcome-app-eks-cluster \
+              --stack-name capstone-welcome-app-eks-nodegroup \
               --template-file .circleci/cloudformation/eks-nodes.yml
           no_output_timeout: 30m
 

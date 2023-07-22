@@ -59,6 +59,13 @@ jobs:
           # expect the PublicCIDR to change, which is a much smaller changeset
           # that should apply quite quickly.
           no_output_timeout: 30m
+      - run:
+          name: 'Create / update EKS nodegroup from template'
+          command: |
+            aws cloudformation deploy \
+              --stack-name capstone-welcome-app-eks-cluster \
+              --template-file .circleci/cloudformation/eks-nodes.yml
+          no_output_timeout: 30m
 
 workflows:
   default:

@@ -17,7 +17,7 @@ Resources:
     Type: 'AWS::EKS::Nodegroup'
     Properties:
       ClusterName: CapstoneWelcomeAppProd
-      NodeRole: NodeRoleARN
+      NodeRole: !Ref NodeRoleARN
       InstanceTypes: [ 't2.micro' ]
       ScalingConfig:
         MinSize: 1

@@ -5,11 +5,8 @@ Parameters:
   SubnetIds:
     Description: Subnets we want to use in our cluster
     Type: List<AWS::EC2::Subnet::Id>
-    # Default to pre-existing subnets in my us-east-1 VPC
-    Default:
-      - subnet-01d264625615e0f91 # us-east-1a
-      - subnet-00794d4b7e6f2228d # us-east-1b
-      - subnet-0cd97581f811ad0b4 # us-east-1c
+    # Default to pre-existing subnets in my us-east-1 VPC in AZs a, b, and c
+    Default: subnet-01d264625615e0f91,subnet-00794d4b7e6f2228d,subnet-0cd97581f811ad0b4
 
   PublicCIDR:
     Description: CIDR we want to allow access to the cluster endpoint.

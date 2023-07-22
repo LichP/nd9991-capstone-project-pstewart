@@ -25,6 +25,9 @@ Resources:
       Name: CapstoneWelcomeAppProd
       RoleArn: !Ref ControlRoleARN
       ResourcesVpcConfig:
+        SecurityGroupIds:
+          Fn::ImportValue:
+            !Sub "${VPCStackName}-SecurityGroups"
         SubnetIds:
           Fn::ImportValue:
             !Sub "${VPCStackName}-SubnetIds"

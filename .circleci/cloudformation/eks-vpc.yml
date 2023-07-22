@@ -35,7 +35,7 @@ Parameters:
     Default: 192.168.144.0/20
     Description: CidrBlock for private subnet 02 within the VPC
 
-  PrivateSubnet02Block:
+  PrivateSubnet03Block:
     Type: String
     Default: 192.168.160.0/20
     Description: CidrBlock for private subnet 03 within the VPC

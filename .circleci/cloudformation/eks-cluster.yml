@@ -25,8 +25,16 @@ Resources:
       Name: CapstoneWelcomeAppProd
       RoleArn: !Ref ControlRoleARN
       ResourcesVpcConfig:
-        SecurityGroupIds: !Split [ ",", !ImportValue !Sub "${VPCStackName}-SecurityGroups" ]
-        SubnetIds: !Split [ ",", !ImportValue !Sub "${VPCStackName}-SubnetIds" ]
+        SecurityGroupIds:
+          Fn::Split:
+            - ","
+            - Fn::ImportValue:
+                !Sub "${VPCStackName}-SecurityGroups"
+        SubnetIds:
+          Fn::Split:
+            - ","
+            - Fn::ImportValue:
+               !Sub "${VPCStackName}-SubnetIds"
         EndpointPublicAccess: true
         EndpointPrivateAccess: true
         PublicAccessCidrs:

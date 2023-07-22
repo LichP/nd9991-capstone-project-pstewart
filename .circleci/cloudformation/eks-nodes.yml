@@ -2,6 +2,11 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: Deploys the EKS Cluster nodes for the capstone-welcome-app application.
 
 Parameters:
+  VPCStackName:
+    Description: Name of the stack used to configure the VPC.
+    Type: String
+    Default: capstone-welcome-app-eks-vpc
+
   NodeRoleARN:
     Description: ARN of eks nodes IAM role.
     Type: String

@@ -58,10 +58,24 @@ jobs:
       - run:
           name: 'Create / update EKS cluster from template'
           command: |
-            aws cloudformation deploy \
-              --stack-name capstone-welcome-app-eks-cluster \
-              --template-file .circleci/cloudformation/eks-cluster.yml \
-              --parameter-overrides PublicCIDR=$(curl -s http://checkip.amazonaws.com)/32
+            ## If we're running outside of a workflow (i.e. locally) then we
+            ## override the PublicCIDR so our cluster API is only accessible
+            ## from the local machine. The original idea here was to ensure
+            ## we only ever allow the current host to access the API endpoint,
+            ## however I then split out the kubectl steps to the separate
+            ## 'deploy' job which causes this approach to fail as that job
+            ## runs in a separate container which could be run on a completely
+            ## different host when run on CircleCI.
+            if [ -z "${CIRCLE_WORKFLOW_ID:0:7}" ]; then
+              aws cloudformation deploy \
+                --stack-name capstone-welcome-app-eks-cluster \
+                --template-file .circleci/cloudformation/eks-cluster.yml \
+                --parameter-overrides PublicCIDR=$(curl -s http://checkip.amazonaws.com)/32
+            else
+              aws cloudformation deploy \
+                --stack-name capstone-welcome-app-eks-cluster \
+                --template-file .circleci/cloudformation/eks-cluster.yml
+            fi
           # We increase the timeout for this step as during the first run when
           # infrastructure is being created this step will be slow, however in
           # normal runs where we don't change the cloudformation yaml we only

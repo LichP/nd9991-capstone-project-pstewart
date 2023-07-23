@@ -7,6 +7,11 @@ spec:
   selector:
     matchLabels:
       app: capstone-welcome-app
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
   template:
     metadata:
       labels:
@@ -14,7 +19,7 @@ spec:
     spec:
       containers:
         - name: capstone-welcome-app
-          image: 928265084040.dkr.ecr.us-east-1.amazonaws.com/capstone-welcome-app:latest
+          image: 928265084040.dkr.ecr.us-east-1.amazonaws.com/capstone-welcome-app:build-${CIRCLE_WORKFLOW_ID:0:7}
           env:
             - name: APP_KEY
               valueFrom:

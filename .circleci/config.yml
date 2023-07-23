@@ -38,11 +38,8 @@ jobs:
       - run:
           name: 'Tag image and push to registry'
           command: |
-            ## We tag both the exact build and also a 'latest' tag so we don't have to specify the build ID in out kubernetes deployment.yml
             docker tag capstone-welcome-app:build-${CIRCLE_WORKFLOW_ID:0:7} 928265084040.dkr.ecr.us-east-1.amazonaws.com/capstone-welcome-app:build-${CIRCLE_WORKFLOW_ID:0:7}
             docker push 928265084040.dkr.ecr.us-east-1.amazonaws.com/capstone-welcome-app:build-${CIRCLE_WORKFLOW_ID:0:7}
-            docker tag capstone-welcome-app:build-${CIRCLE_WORKFLOW_ID:0:7} 928265084040.dkr.ecr.us-east-1.amazonaws.com/capstone-welcome-app:latest
-            docker push 928265084040.dkr.ecr.us-east-1.amazonaws.com/capstone-welcome-app:latest
   # configure-infrastructure: Ensure our EKS cluster exists and is ready to use
   configure-infrastructure:
     docker:
@@ -128,7 +125,8 @@ jobs:
           name: Ensure deployment and service exist
           command: |
             if ! kubectl get deployments capstone-welcome-app-deployment; then
-              kubectl apply -f .circleci/kubernetes/deployment.yml
+              ## We use envsubst to inject the workflow ID into the deployment yaml
+              cat .circleci/kubernetes/deployment.yml | envsubst | kubectl apply -f -
               ## This will create an Amazon Elastic Load Balancer that reverse proxies our app
               kubectl expose deployment/capstone-welcome-app-deployment --type="LoadBalancer" --port 80
             fi

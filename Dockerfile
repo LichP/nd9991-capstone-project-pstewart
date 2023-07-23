@@ -52,9 +52,11 @@ WORKDIR /var/www/html
 # Copy in front-end build artefacts
 COPY --from=frontend /app/public/build/ ./public/build/
 
-# Run Laravel deployment optimizations (see https://laravel.com/docs/10.x/deployment)
-RUN php artisan config:cache && \
-    php artisan event:cache && \
+# Run Laravel deployment optimizations except config cache (see https://laravel.com/docs/10.x/deployment)
+# We omit config caching during the so that we're able to inject config into the running environment with
+# relevant runtime secrets. We then perform the config:cache at run time immediately prior to starting
+# php-fpm (see supervisord.conf)
+RUN php artisan event:cache && \
     php artisan route:cache && \
     php artisan view:cache
 

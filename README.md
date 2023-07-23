@@ -8,4 +8,4 @@ The app shows a simple page on `/welcome` which welcomes you as a guest and show
 
 ## Version
 
-2
+3

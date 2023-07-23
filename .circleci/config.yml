@@ -75,6 +75,7 @@ jobs:
               aws cloudformation deploy \
                 --stack-name capstone-welcome-app-eks-cluster \
                 --template-file .circleci/cloudformation/eks-cluster.yml
+                --parameter-overrides PublicCIDR=0.0.0.0/0
             fi
           # We increase the timeout for this step as during the first run when
           # infrastructure is being created this step will be slow, however in

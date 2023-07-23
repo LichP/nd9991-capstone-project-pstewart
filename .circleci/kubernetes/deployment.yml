@@ -15,5 +15,11 @@ spec:
       containers:
         - name: capstone-welcome-app
           image: 928265084040.dkr.ecr.us-east-1.amazonaws.com/capstone-welcome-app:latest
+          env:
+            - name: APP_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: capstone-app-env
+                  key: app-key
       imagePullSecrets:
         - name: capstone-registry-credentials

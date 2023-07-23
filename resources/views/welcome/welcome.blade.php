@@ -11,6 +11,6 @@
             Welcome to this demo app, {{ $name }}! We hope you're having a great day.
         </p>
         <h2>Version</h2>
-        <p><strong>1</strong></p>
+        <p><strong>2</strong></p>
     </article>
 @endsection

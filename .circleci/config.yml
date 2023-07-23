@@ -91,33 +91,36 @@ jobs:
           name: Login in to container registry and create/edit kubernetes registry credentials secret
           command: |
             ecr_password_token=$(aws ecr get-login-password | cut -d' ' -f6)
-            if [[ $(kubectl get secrets capstone-registry-credentials) =~ "not found" ]]; then
-              action=create
-            else
-              action=update
-            end
-            kubectl $action secret docker-registry capstone-registry-credentials \
+            if kubectl get secrets capstone-registry-credentials; then
+              ## Seems easier to delete and recreate a secret rather than editing it
+              kubectl delete secret capstone-registry-credentials
+            fi
+            kubectl create secret docker-registry capstone-registry-credentials \
               --docker-server=https://928265084040.dkr.ecr.us-east-1.amazonaws.com \
               --docker-username=AWS \
               --docker-password=$ecr_password_token
       - run:
-          name: Create / update app secrets
+          name: Create/edit app secrets
           command: |
+            if kubectl get secrets capstone-app-env; then
+              kubectl delete secret capstone-app-env
+            fi
             ## For a Laravel app we need to specify the app key as a minimum. For a real app
             ## we would also have other secrets such as db credentials etc
-            if [[ $(kubectl get secrets capstone-env-app-key) =~ "not found" ]]; then
-              action=create
-            else
-              action=update
-            end
-            kubectl $action secret generic capstone-env-app-key \
-              --form-literal=APP_KEY=${LARAVEL_APP_KEY}
+            kubectl create secret generic capstone-app-env \
+              --from-literal=app-key=${LARAVEL_APP_KEY}
       - run:
           name: Ensure deployment and service exist
           command: |
-            if [[ $(kubectl get deployments -l app=capstone-welcome-app) =~ "No resources found" ]]; then
+            if ! kubectl get deployments capstone-welcome-app-deployment; then
               kubectl apply -f .circleci/kubernetes/deployment.yml
+              ## This will create an Amazon Elastic Load Balancer that reverse proxies our app
+              kubectl expose deployment/capstone-welcome-app-deployment --type="LoadBalancer" --port 80
             fi
+      - run:
+          name: Perform rolling update
+          command: |
+            kubectl set image deployments/capstone-welcome-app-deployment 928265084040.dkr.ecr.us-east-1.amazonaws.com/capstone-welcome-app:build-${CIRCLE_WORKFLOW_ID:0:7}
 
 workflows:
   default:

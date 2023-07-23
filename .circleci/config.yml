@@ -76,9 +76,9 @@ jobs:
             fi
           # We increase the timeout for this step as during the first run when
           # infrastructure is being created this step will be slow, however in
-          # normal runs where we don't change the cloudformation yaml we only
-          # expect the PublicCIDR to change, which is a much smaller changeset
-          # that should apply quite quickly.
+          # normal runs where we don't change the cloudformation yaml the
+          # changeset will show no change to deploy and the step completes
+          # quickly.
           no_output_timeout: 30m
       - run:
           name: 'Create / update EKS nodegroup from template'

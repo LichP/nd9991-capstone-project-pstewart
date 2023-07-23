@@ -17,6 +17,6 @@ class WelcomeController extends BaseController
     {
         $name = ucfirst(strtolower($name));
 
-        return view('welcome.welcome', ['name' => $name]);
+         return view('welcome.welcome', ['name' => $name]);
     }
 }

@@ -135,7 +135,7 @@ jobs:
       - run:
           name: Perform rolling update
           command: |
-            kubectl set image deployments/capstone-welcome-app-deployment 928265084040.dkr.ecr.us-east-1.amazonaws.com/capstone-welcome-app:build-${CIRCLE_WORKFLOW_ID:0:7}
+            kubectl set image deployments/capstone-welcome-app-deployment capstone-welcome-app=928265084040.dkr.ecr.us-east-1.amazonaws.com/capstone-welcome-app:build-${CIRCLE_WORKFLOW_ID:0:7}
 
 workflows:
   default:
